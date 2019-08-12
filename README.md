@@ -3,15 +3,15 @@
 Keras implementation of M2Det object detection as described in [M2Det: A Single-Shot Object Detector based on Multi-Level Feature Pyramid Network](https://arxiv.org/pdf/1811.04533.pdf)
 by Qijie Zhao, Tao Sheng, Yongtao Wang, Zhi Tang1, Ying Chen, Ling Cai2 and Haibin Ling.
 
-##Important
+## Important
 
 The main structure of this project is from [fizyr/keras-retinanet](https://github.com/fizyr/keras-retinanet)
 Right now, this repository is availble to use just train for vgg16 m2det with CSV datasets
 Train the code with
 
-'''
-python tkeras_m2det/bin/train.py csv /path/to/custom/csv/data /path/to/custom/class/data
-'''
+```
+python keras_m2det/bin/train.py csv /path/to/custom/csv/data /path/to/custom/class/data
+```
 
 ## Installation
 
