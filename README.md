@@ -36,37 +36,37 @@ Where `boxes` are shaped `(None, None, 4)` (for `(x1, y1, x2, y2)`), scores is s
 
 Loading models can be done in the following manner:
 ```python
-from keras_retinanet.models import load_model
+from keras_m2det.models import load_model
 model = load_model('/path/to/model.h5', backbone_name='resnet50')
 ```
 
 Execution time on NVIDIA Pascal Titan X is roughly 75msec for an image of shape `1000x800x3`.
 
 ### Converting a training model to inference model
-The training procedure of `keras-retinanet` works with *training models*. These are stripped down versions compared to the *inference model* and only contains the layers necessary for training (regression and classification values). If you wish to do inference on a model (perform object detection on an image), you need to convert the trained model to an inference model. This is done as follows:
+The training procedure of `keras-m2det` works with *training models*. These are stripped down versions compared to the *inference model* and only contains the layers necessary for training (regression and classification values). If you wish to do inference on a model (perform object detection on an image), you need to convert the trained model to an inference model. This is done as follows:
 
 ```shell
 # Running directly from the repository:
-keras_retinanet/bin/convert_model.py /path/to/training/model.h5 /path/to/save/inference/model.h5
+keras_m2det/bin/convert_model.py /path/to/training/model.h5 /path/to/save/inference/model.h5
 
 # Using the installed script:
-retinanet-convert-model /path/to/training/model.h5 /path/to/save/inference/model.h5
+m2det-convert-model /path/to/training/model.h5 /path/to/save/inference/model.h5
 ```
 
-Most scripts (like `retinanet-evaluate`) also support converting on the fly, using the `--convert-model` argument.
+Most scripts (like `m2det-evaluate`) also support converting on the fly, using the `--convert-model` argument.
 
 
 ## Training
-`keras-retinanet` can be trained using [this](https://github.com/fizyr/keras-retinanet/blob/master/keras_retinanet/bin/train.py) script.
-Note that the train script uses relative imports since it is inside the `keras_retinanet` package.
+`keras-m2det` can be trained using [this](https://github.com/LeeDongYeun/keras-m2det/blob/master/keras_m2det/bin/train.py) script.
+Note that the train script uses relative imports since it is inside the `keras_m2det` package.
 If you want to adjust the script for your own use outside of this repository,
 you will need to switch it to use absolute imports.
 
-If you installed `keras-retinanet` correctly, the train script will be installed as `retinanet-train`.
-However, if you make local modifications to the `keras-retinanet` repository, you should run the script directly from the repository.
+If you installed `keras-m2det` correctly, the train script will be installed as `m2det-train`.
+However, if you make local modifications to the `keras-m2det` repository, you should run the script directly from the repository.
 That will ensure that your local changes will be used by the train script.
 
-The default backbone is `resnet50`. You can change this using the `--backbone=xxx` argument in the running script.
+The default backbone is `vgg16`. You can change this using the `--backbone=xxx` argument in the running script.
 `xxx` can be one of the backbones in resnet models (`resnet50`, `resnet101`, `resnet152`), mobilenet models (`mobilenet128_1.0`, `mobilenet128_0.75`, `mobilenet160_1.0`, etc), densenet models or vgg models. The different options are defined by each model in their corresponding python scripts (`resnet.py`, `mobilenet.py`, etc).
 
 Trained models can't be used directly for inference. To convert a trained model to an inference model, check [here](https://github.com/fizyr/keras-retinanet#converting-a-training-model-to-inference-model).
@@ -75,19 +75,19 @@ Trained models can't be used directly for inference. To convert a trained model 
 For training on [Pascal VOC](http://host.robots.ox.ac.uk/pascal/VOC/), run:
 ```shell
 # Running directly from the repository:
-keras_retinanet/bin/train.py pascal /path/to/VOCdevkit/VOC2007
+keras_m2det/bin/train.py pascal /path/to/VOCdevkit/VOC2007
 
 # Using the installed script:
-retinanet-train pascal /path/to/VOCdevkit/VOC2007
+m2det-train pascal /path/to/VOCdevkit/VOC2007
 ```
 
 For training on [MS COCO](http://cocodataset.org/#home), run:
 ```shell
 # Running directly from the repository:
-keras_retinanet/bin/train.py coco /path/to/MS/COCO
+keras_m2det/bin/train.py coco /path/to/MS/COCO
 
 # Using the installed script:
-retinanet-train coco /path/to/MS/COCO
+m2det-train coco /path/to/MS/COCO
 ```
 
 The pretrained MS COCO model can be downloaded [here](https://github.com/fizyr/keras-retinanet/releases). Results using the `cocoapi` are shown below (note: according to the paper, this configuration should achieve a mAP of 0.357).
@@ -111,30 +111,30 @@ For training on Open Images Dataset [OID](https://storage.googleapis.com/openima
 or taking place to the [OID challenges](https://storage.googleapis.com/openimages/web/challenge.html), run:
 ```shell
 # Running directly from the repository:
-keras_retinanet/bin/train.py oid /path/to/OID
+keras_m2det/bin/train.py oid /path/to/OID
 
 # Using the installed script:
-retinanet-train oid /path/to/OID
+m2det-train oid /path/to/OID
 
 # You can also specify a list of labels if you want to train on a subset
 # by adding the argument 'labels_filter':
-keras_retinanet/bin/train.py oid /path/to/OID --labels-filter=Helmet,Tree
+keras_m2det/bin/train.py oid /path/to/OID --labels-filter=Helmet,Tree
 
 # You can also specify a parent label if you want to train on a branch
 # from the semantic hierarchical tree (i.e a parent and all children)
 (https://storage.googleapis.com/openimages/challenge_2018/bbox_labels_500_hierarchy_visualizer/circle.html)
 # by adding the argument 'parent-label':
-keras_retinanet/bin/train.py oid /path/to/OID --parent-label=Boat
+keras_m2det/bin/train.py oid /path/to/OID --parent-label=Boat
 ```
 
 
 For training on [KITTI](http://www.cvlibs.net/datasets/kitti/eval_object.php), run:
 ```shell
 # Running directly from the repository:
-keras_retinanet/bin/train.py kitti /path/to/KITTI
+keras_m2det/bin/train.py kitti /path/to/KITTI
 
 # Using the installed script:
-retinanet-train kitti /path/to/KITTI
+m2det-train kitti /path/to/KITTI
 
 If you want to prepare the dataset you can use the following script:
 https://github.com/NVIDIA/DIGITS/blob/master/examples/object-detection/prepare_kitti_data.py
@@ -146,25 +146,25 @@ See below for more details on the format of these CSV files.
 To train using your CSV, run:
 ```shell
 # Running directly from the repository:
-keras_retinanet/bin/train.py csv /path/to/csv/file/containing/annotations /path/to/csv/file/containing/classes
+keras_m2det/bin/train.py csv /path/to/csv/file/containing/annotations /path/to/csv/file/containing/classes
 
 # Using the installed script:
-retinanet-train csv /path/to/csv/file/containing/annotations /path/to/csv/file/containing/classes
+m2det-train csv /path/to/csv/file/containing/annotations /path/to/csv/file/containing/classes
 ```
 
 In general, the steps to train on your own datasets are:
-1) Create a model by calling for instance `keras_retinanet.models.backbone('resnet50').retinanet(num_classes=80)` and compile it.
+1) Create a model by calling for instance `keras_m2det.models.backbone('resnet50').retinanet(num_classes=80)` and compile it.
    Empirically, the following compile arguments have been found to work well:
 ```python
 model.compile(
     loss={
-        'regression'    : keras_retinanet.losses.smooth_l1(),
-        'classification': keras_retinanet.losses.focal()
+        'regression'    : keras_m2det.losses.smooth_l1(),
+        'classification': keras_m2det.losses.focal()
     },
     optimizer=keras.optimizers.adam(lr=1e-5, clipnorm=0.001)
 )
 ```
-2) Create generators for training and testing data (an example is show in [`keras_retinanet.preprocessing.pascal_voc.PascalVocGenerator`](https://github.com/fizyr/keras-retinanet/blob/master/keras_retinanet/preprocessing/pascal_voc.py)).
+2) Create generators for training and testing data (an example is show in [`keras_m2det.preprocessing.pascal_voc.PascalVocGenerator`](https://github.com/LeeDongYeun/keras-m2det/blob/master/keras_m2det/preprocessing/pascal_voc.py)).
 3) Use `model.fit_generator` to start training.
 
 ## CSV datasets
@@ -219,7 +219,7 @@ bird,2
 ```
 
 ## Debugging
-Creating your own dataset does not always work out of the box. There is a [`debug.py`](https://github.com/fizyr/keras-retinanet/blob/master/keras_retinanet/bin/debug.py) tool to help find the most common mistakes.
+Creating your own dataset does not always work out of the box. There is a [`debug.py`](https://github.com/LeeDongYeun/keras-m2det/blob/master/keras_m2det/bin/debug.py) tool to help find the most common mistakes.
 
 Particularly helpful is the `--annotations` flag which displays your annotations on the images from your dataset. Annotations are colored in green when there are anchors available and colored in red when there are no anchors available. If an annotation doesn't have anchors available, it means it won't contribute to training. It is normal for a small amount of annotations to show up in red, but if most or all annotations are red there is cause for concern. The most common issues are that the annotations are too small or too oddly shaped (stretched out).
 
@@ -228,7 +228,7 @@ Particularly helpful is the `--annotations` flag which displays your annotations
 ### MS COCO
 
 ## Status
-Example output images using `keras-retinanet` are shown below.
+Example output images using `keras-m2det` are shown below.
 
 <p align="center">
   <img src="https://github.com/delftrobotics/keras-retinanet/blob/master/images/coco1.png" alt="Example result of RetinaNet on MS COCO"/>

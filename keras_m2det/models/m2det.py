@@ -26,12 +26,10 @@ from . import assert_training_model
 
 
 def upsample_add(tensors):
-    print(tensors)
     _, h, w, _ = tensors[1].shape
-    print(tensors[1].shape)
-    print(type(h))
-    # h = int(h)
-    # w = int(w)
+
+    h = int(h)
+    w = int(w)
     up = tf.image.resize_bilinear(tensors[0], size=(h, w))
     out = up + tensors[1]
 
