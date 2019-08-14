@@ -19,7 +19,7 @@ from keras.applications import mobilenet
 from keras.utils import get_file
 from ..utils.image import preprocess_image
 
-from . import retinanet
+from . import m2det
 from . import Backbone
 
 
@@ -29,10 +29,10 @@ class MobileNetBackbone(Backbone):
 
     allowed_backbones = ['mobilenet128', 'mobilenet160', 'mobilenet192', 'mobilenet224']
 
-    def retinanet(self, *args, **kwargs):
+    def m2det(self, *args, **kwargs):
         """ Returns a retinanet model using the correct backbone.
         """
-        return mobilenet_retinanet(*args, backbone=self.backbone, **kwargs)
+        return mobilenet_m2det(*args, backbone=self.backbone, **kwargs)
 
     def download_imagenet(self):
         """ Download pre-trained weights for the specified backbone name.
@@ -77,14 +77,14 @@ class MobileNetBackbone(Backbone):
         return preprocess_image(inputs, mode='tf')
 
 
-def mobilenet_retinanet(num_classes, backbone='mobilenet224_1.0', inputs=None, modifier=None, **kwargs):
-    """ Constructs a retinanet model using a mobilenet backbone.
+def mobilenet_m2det(num_classes, backbone='mobilenet224_1.0', inputs=None, modifier=None, **kwargs):
+    """ Constructs a m2det model using a mobilenet backbone.
 
     Args
         num_classes: Number of classes to predict.
         backbone: Which backbone to use (one of ('mobilenet128', 'mobilenet160', 'mobilenet192', 'mobilenet224')).
         inputs: The inputs to the network (defaults to a Tensor of shape (None, None, 3)).
-        modifier: A function handler which can modify the backbone before using it in retinanet (this can be used to freeze backbone layers for example).
+        modifier: A function handler which can modify the backbone before using it in m2det (this can be used to freeze backbone layers for example).
 
     Returns
         RetinaNet model with a MobileNet backbone.
@@ -93,7 +93,7 @@ def mobilenet_retinanet(num_classes, backbone='mobilenet224_1.0', inputs=None, m
 
     # choose default input
     if inputs is None:
-        inputs = keras.layers.Input((None, None, 3))
+        inputs = keras.layers.Input((640, 640, 3))
 
     backbone = mobilenet.MobileNet(input_tensor=inputs, alpha=alpha, include_top=False, pooling=None, weights=None)
 
@@ -106,4 +106,6 @@ def mobilenet_retinanet(num_classes, backbone='mobilenet224_1.0', inputs=None, m
     if modifier:
         backbone = modifier(backbone)
 
-    return retinanet.retinanet(inputs=inputs, num_classes=num_classes, backbone_layers=backbone.outputs, **kwargs)
+    print(backbone.summary())
+
+    return m2det.m2det(inputs=inputs, num_classes=num_classes, backbone_layers=backbone.outputs, **kwargs)

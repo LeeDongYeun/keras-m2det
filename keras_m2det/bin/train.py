@@ -437,6 +437,9 @@ def main(args=None):
     if 'resnet' in args.backbone:
         assert int(args.image_min_side) == 640, \
             "Using resnet backbone in m2det, input should be resized to (640,640,3). Use --image-min-side 640"
+    if 'mobilenet' in args.backbone:
+        assert int(args.image_min_side) == 640, \
+            "Using mobilenet backbone in m2det, input should be resized to (640,640,3). Use --image-min-side 640"
 
     # create object that stores backbone information
     backbone = models.backbone(args.backbone)
