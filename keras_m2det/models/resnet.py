@@ -91,9 +91,9 @@ def resnet_m2det(num_classes, backbone='resnet50', inputs=None, modifier=None, *
     # choose default input
     if inputs is None:
         if keras.backend.image_data_format() == 'channels_first':
-            inputs = keras.layers.Input(shape=(3, None, None))
+            inputs = keras.layers.Input(shape=(3, 640, 640))
         else:
-            inputs = keras.layers.Input(shape=(None, None, 3))
+            inputs = keras.layers.Input(shape=(640, 640, 3))
 
     # create the resnet backbone
     if backbone == 'resnet50':
@@ -111,16 +111,3 @@ def resnet_m2det(num_classes, backbone='resnet50', inputs=None, modifier=None, *
 
     # create the full model
     return m2det.m2det(inputs=inputs, num_classes=num_classes, backbone_layers=resnet.outputs[1:], **kwargs)
-
-'''
-def resnet50_retinanet(num_classes, inputs=None, **kwargs):
-    return resnet_retinanet(num_classes=num_classes, backbone='resnet50', inputs=inputs, **kwargs)
-
-
-def resnet101_retinanet(num_classes, inputs=None, **kwargs):
-    return resnet_retinanet(num_classes=num_classes, backbone='resnet101', inputs=inputs, **kwargs)
-
-
-def resnet152_retinanet(num_classes, inputs=None, **kwargs):
-    return resnet_retinanet(num_classes=num_classes, backbone='resnet152', inputs=inputs, **kwargs)
-'''

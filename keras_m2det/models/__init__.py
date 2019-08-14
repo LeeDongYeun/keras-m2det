@@ -1,5 +1,6 @@
 from __future__ import print_function
 import sys
+import tensorflow as tf
 
 
 class Backbone(object):
@@ -11,6 +12,7 @@ class Backbone(object):
         from .. import losses
         from .. import initializers
         self.custom_objects = {
+            'tf'               : tf,
             'UpsampleLike'     : layers.UpsampleLike,
             'PriorProbability' : initializers.PriorProbability,
             'RegressBoxes'     : layers.RegressBoxes,
@@ -80,6 +82,7 @@ def load_model(filepath, backbone_name='resnet50'):
         ValueError: In case of an invalid savefile.
     """
     import keras.models
+    print("Loading the model from ", filepath, "...")
     return keras.models.load_model(filepath, custom_objects=backbone(backbone_name).custom_objects)
 
 

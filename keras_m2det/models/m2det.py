@@ -1,3 +1,19 @@
+"""
+Copyright 2019 LeeDongYeun (https://github.com/LeeDongYeun/)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
 import keras
 import numpy as np
 import tensorflow as tf
@@ -148,7 +164,6 @@ def _create_feature_pyramid(base_feature, stage=6):
 
     inputs = keras.layers.Conv2D(filters=256, kernel_size=1, strides=1, padding='same')(base_feature)
     tum = TUM(1)
-    print(tum.summary())
 
     outputs = tum(inputs)
     max_output = outputs[0]
@@ -156,17 +171,18 @@ def _create_feature_pyramid(base_feature, stage=6):
 
     for i in range(2, stage+1):
         ffmv2 = FFMv2(i - 1)
-        print(ffmv2.summary())
         inputs = ffmv2([base_feature, max_output])
 
         tum = TUM(i)
-        print(tum.summary())
         outputs = tum(inputs)
 
         max_output = outputs[0]
         features.append(outputs)
 
     feature_pyramid = _concatenate_features(features)
+
+    print(tum.summary())
+    print(ffmv2.summary())
 
     return feature_pyramid
 
@@ -203,11 +219,13 @@ def SFAM(input_sizes, compress_ratio=16, name='SFAM'):
         _input = keras.layers.Input(input_size)
 
         se_block = SE_block(input_size, compress_ratio=compress_ratio, name='SE_block_' + str(i))
-        print(se_block.summary())
+
         _output = se_block(_input)
 
         inputs.append(_input)
         outputs.append(_output)
+
+    print(se_block.summary())
 
     return keras.models.Model(inputs=inputs, outputs=outputs, name=name)
 
@@ -402,8 +420,10 @@ def m2det(inputs, backbone_layers, num_classes, num_anchors=None, submodels=None
         submodels = default_submodels(num_classes, num_anchors)
 
     C3, C4, C5 = backbone_layers
+    _, h4, w4, f4 = C4.shape
+    _, h5, w5, f5 = C5.shape
 
-    ffmv1 = FFMv1(feature_size_1=256, feature_size_2=512)
+    ffmv1 = FFMv1((int(h4), int(w4), int(f4)), (int(h5), int(w5), int(f5)), feature_size_1=256, feature_size_2=512)
     print(ffmv1.summary())
     base_feature = ffmv1([C4, C5])
 

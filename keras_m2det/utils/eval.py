@@ -101,6 +101,8 @@ def _get_detections(generator, model, score_threshold=0.05, max_detections=100, 
         image_scores     = scores[scores_sort]
         image_labels = labels[0, indices[scores_sort]]
 
+        image_detections = np.concatenate([image_boxes, np.expand_dims(image_scores, axis=1), np.expand_dims(image_labels, axis=1)], axis=1)
+        '''
         selected_indices = tf.image.non_max_suppression(image_boxes, image_scores, 100)
         selected_indices = tf.Session().run(selected_indices)
 
@@ -109,7 +111,7 @@ def _get_detections(generator, model, score_threshold=0.05, max_detections=100, 
         selected_labels = image_labels[selected_indices]
 
         image_detections = np.concatenate([selected_boxes, np.expand_dims(selected_scores, axis=1), np.expand_dims(selected_labels, axis=1)], axis=1)
-
+        '''
         # print("image_boxes shape : ", image_boxes.shape)
         # print("image_scores shape : ", image_scores.shape)
         # print("image_labels shape : ", image_labels.shape)

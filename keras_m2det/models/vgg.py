@@ -67,13 +67,13 @@ class VGGBackbone(Backbone):
 
 
 def vgg_m2det(num_classes, backbone='vgg16', inputs=None, modifier=None, **kwargs):
-    """ Constructs a retinanet model using a vgg backbone.
+    """ Constructs a m2det model using a vgg backbone.
 
     Args
         num_classes: Number of classes to predict.
         backbone: Which backbone to use (one of ('vgg16', 'vgg19')).
-        inputs: The inputs to the network (defaults to a Tensor of shape (None, None, 3)).
-        modifier: A function handler which can modify the backbone before using it in retinanet (this can be used to freeze backbone layers for example).
+        inputs: The inputs to the network (defaults to a Tensor of shape (320, 320, 3)).
+        modifier: A function handler which can modify the backbone before using it in m2det (this can be used to freeze backbone layers for example).
 
     Returns
         RetinaNet model with a VGG backbone.
@@ -85,8 +85,10 @@ def vgg_m2det(num_classes, backbone='vgg16', inputs=None, modifier=None, **kwarg
     # create the vgg backbone
     if backbone == 'vgg16':
         vgg = keras.applications.VGG16(input_tensor=inputs, include_top=False, weights=None)
+        layer_names = ["block3_conv3", "block4_conv3", "block5_conv3"]
     elif backbone == 'vgg19':
         vgg = keras.applications.VGG19(input_tensor=inputs, include_top=False, weights=None)
+        layer_names = ["block3_conv4", "block4_conv4", "block5_conv4"]
     else:
         raise ValueError("Backbone '{}' not recognized.".format(backbone))
 
@@ -94,6 +96,6 @@ def vgg_m2det(num_classes, backbone='vgg16', inputs=None, modifier=None, **kwarg
         vgg = modifier(vgg)
 
     # create the full model
-    layer_names = ["block3_conv3", "block4_conv3", "block5_conv3"]
+
     layer_outputs = [vgg.get_layer(name).output for name in layer_names]
     return m2det.m2det(inputs=inputs, num_classes=num_classes, backbone_layers=layer_outputs, **kwargs)
