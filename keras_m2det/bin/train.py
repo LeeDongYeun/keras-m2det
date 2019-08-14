@@ -431,6 +431,13 @@ def main(args=None):
         args = sys.argv[1:]
     args = parse_args(args)
 
+    if 'vgg' in args.backbone:
+        assert int(args.image_min_side) == 320, \
+            "Using vgg backbone in m2det, input should be resized to (320,320,3). Use --image-min-side 320"
+    if 'resnet' in args.backbone:
+        assert int(args.image_min_side) == 640, \
+            "Using resnet backbone in m2det, input should be resized to (640,640,3). Use --image-min-side 640"
+
     # create object that stores backbone information
     backbone = models.backbone(args.backbone)
 

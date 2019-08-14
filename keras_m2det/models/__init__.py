@@ -1,6 +1,7 @@
 from __future__ import print_function
 import sys
 import tensorflow as tf
+import keras_resnet
 
 
 class Backbone(object):
@@ -22,6 +23,7 @@ class Backbone(object):
             '_smooth_l1'       : losses.smooth_l1(),
             '_focal'           : losses.focal(),
         }
+        self.custom_objects.update(keras_resnet.custom_objects)
 
         self.backbone = backbone
         self.validate()

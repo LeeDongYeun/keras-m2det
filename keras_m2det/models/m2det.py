@@ -17,6 +17,7 @@ limitations under the License.
 import keras
 import numpy as np
 import tensorflow as tf
+import keras_resnet
 
 from .. import initializers
 from .. import layers
@@ -46,7 +47,7 @@ def upsample_add_output_shape(input_shapes):
 def Conv(inputs, filters, kernel_size, strides, padding, name='conv'):
 
     conv = keras.layers.Conv2D(filters=filters, kernel_size=kernel_size, strides=strides, padding=padding, name=name+'_conv')(inputs)
-    bn = keras.layers.BatchNormalization(name=name+'_BN')(conv)
+    bn = keras_resnet.layers.BatchNormalization(freeze=False, name=name+'_BN')(conv)
     relu = keras.layers.ReLU(name=name)(bn)
 
     return relu
