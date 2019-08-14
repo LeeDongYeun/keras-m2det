@@ -424,7 +424,10 @@ def m2det(inputs, backbone_layers, num_classes, num_anchors=None, submodels=None
     _, h4, w4, f4 = C4.shape
     _, h5, w5, f5 = C5.shape
 
-    ffmv1 = FFMv1((int(h4), int(w4), int(f4)), (int(h5), int(w5), int(f5)), feature_size_1=256, feature_size_2=512)
+    C4_shape = (int(h4), int(w4), int(f4))
+    C5_shape = (int(h5), int(w5), int(f5))
+
+    ffmv1 = FFMv1(C4_shape, C5_shape, feature_size_1=256, feature_size_2=512)
     print(ffmv1.summary())
     base_feature = ffmv1([C4, C5])
 
