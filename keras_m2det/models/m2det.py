@@ -179,6 +179,7 @@ def _create_feature_pyramid(base_feature, stage=6):
         features.append(outputs)
 
     feature_pyramid = _concatenate_features(features)
+    feature_pyramid.reverse()
 
     print(tum.summary())
     print(ffmv2.summary())
@@ -451,6 +452,13 @@ def m2det_bbox(model=None, nms=True, class_specific_filter=True, name='m2det-bbo
         model = m2det(num_anchors=anchor_params.num_anchors(), **kwargs)
     else:
         assert_training_model(model)
+
+    _, h, w, f = model.input.shape
+    if int(h) == 320:
+        anchor_params = AnchorParameters.vgg
+    elif int(h) == 640:
+        anchor_params = AnchorParameters.resnet
+        print("resnet")
 
     feature_layer = model.get_layer("SFAM")
     features = feature_layer.get_output_at(1)

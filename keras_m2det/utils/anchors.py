@@ -46,6 +46,22 @@ AnchorParameters.default = AnchorParameters(
     scales = np.array([2 ** 0, 2 ** (1.0 / 3.0), 2 ** (2.0 / 3.0)], keras.backend.floatx()),
 )
 
+AnchorParameters.vgg = AnchorParameters(
+    feature_sizes = [[40, 40], [20, 20], [10, 10], [5, 5], [3, 3], [1, 1]],
+    strides = [320//40, 320//20, 320//10, 320//5, 320//3, 320//1],
+    sizes = [10, 20, 40, 80, 160, 320],
+    ratios = np.array([0.5, 1, 2], keras.backend.floatx()),
+    scales = np.array([2 ** 0, 2 ** (1.0 / 3.0), 2 ** (2.0 / 3.0)], keras.backend.floatx()),
+)
+
+AnchorParameters.resnet = AnchorParameters(
+    feature_sizes = [[40, 40], [20, 20], [10, 10], [5, 5], [3, 3], [1, 1]],
+    strides = [640//40, 640//20, 640//10, 640//5, 640//3, 640//1],
+    sizes = [20, 40, 80, 160, 320, 640],
+    ratios = np.array([0.5, 1, 2], keras.backend.floatx()),
+    scales = np.array([2 ** 0, 2 ** (1.0 / 3.0), 2 ** (2.0 / 3.0)], keras.backend.floatx()),
+)
+
 
 def generate_anchors(base_size=8, ratios=None, scales=None):
     """

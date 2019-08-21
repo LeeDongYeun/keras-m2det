@@ -18,7 +18,7 @@ import keras
 from keras.applications import densenet
 from keras.utils import get_file
 
-from . import retinanet
+from . import m2det
 from . import Backbone
 from ..utils.image import preprocess_image
 
@@ -34,10 +34,10 @@ class DenseNetBackbone(Backbone):
     """ Describes backbone information and provides utility functions.
     """
 
-    def retinanet(self, *args, **kwargs):
-        """ Returns a retinanet model using the correct backbone.
+    def m2det(self, *args, **kwargs):
+        """ Returns a m2det model using the correct backbone.
         """
-        return densenet_retinanet(*args, backbone=self.backbone, **kwargs)
+        return densenet_m2det(*args, backbone=self.backbone, **kwargs)
 
     def download_imagenet(self):
         """ Download pre-trained weights for the specified backbone name.
@@ -70,21 +70,21 @@ class DenseNetBackbone(Backbone):
         return preprocess_image(inputs, mode='tf')
 
 
-def densenet_retinanet(num_classes, backbone='densenet121', inputs=None, modifier=None, **kwargs):
-    """ Constructs a retinanet model using a densenet backbone.
+def densenet_m2det(num_classes, backbone='densenet121', inputs=None, modifier=None, **kwargs):
+    """ Constructs a m2det model using a densenet backbone.
 
     Args
         num_classes: Number of classes to predict.
         backbone: Which backbone to use (one of ('densenet121', 'densenet169', 'densenet201')).
         inputs: The inputs to the network (defaults to a Tensor of shape (None, None, 3)).
-        modifier: A function handler which can modify the backbone before using it in retinanet (this can be used to freeze backbone layers for example).
+        modifier: A function handler which can modify the backbone before using it in m2det (this can be used to freeze backbone layers for example).
 
     Returns
-        RetinaNet model with a DenseNet backbone.
+        m2det model with a DenseNet backbone.
     """
     # choose default input
     if inputs is None:
-        inputs = keras.layers.Input((None, None, 3))
+        inputs = keras.layers.Input((640, 640, 3))
 
     blocks, creator = allowed_backbones[backbone]
     model = creator(input_tensor=inputs, include_top=False, pooling=None, weights=None)
@@ -98,8 +98,9 @@ def densenet_retinanet(num_classes, backbone='densenet121', inputs=None, modifie
     # invoke modifier if given
     if modifier:
         model = modifier(model)
+    print(model.summary())
 
     # create the full model
-    model = retinanet.retinanet(inputs=inputs, num_classes=num_classes, backbone_layers=model.outputs, **kwargs)
+    model = m2det.m2det(inputs=inputs, num_classes=num_classes, backbone_layers=model.outputs, **kwargs)
 
     return model

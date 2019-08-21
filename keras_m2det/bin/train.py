@@ -404,7 +404,7 @@ def parse_args(args):
     parser.add_argument('--multi-gpu-force',  help='Extra flag needed to enable (experimental) multi-gpu support.', action='store_true')
     parser.add_argument('--epochs',           help='Number of epochs to train.', type=int, default=50)
     parser.add_argument('--steps',            help='Number of steps per epoch.', type=int, default=10000)
-    parser.add_argument('--lr',               help='Learning rate.', type=float, default=1e-5)
+    parser.add_argument('--lr',               help='Learning rate.', type=float, default=1e-4)
     parser.add_argument('--snapshot-path',    help='Path to store snapshots of models during training (defaults to \'./snapshots\')', default='./snapshots')
     parser.add_argument('--tensorboard-dir',  help='Log directory for Tensorboard output', default='./logs')
     parser.add_argument('--no-snapshots',     help='Disable saving snapshots.', dest='snapshots', action='store_false')
@@ -438,6 +438,9 @@ def main(args=None):
         assert int(args.image_min_side) == 640, \
             "Using resnet backbone in m2det, input should be resized to (640,640,3). Use --image-min-side 640"
     if 'mobilenet' in args.backbone:
+        assert int(args.image_min_side) == 640, \
+            "Using mobilenet backbone in m2det, input should be resized to (640,640,3). Use --image-min-side 640"
+    if 'densenet' in args.backbone:
         assert int(args.image_min_side) == 640, \
             "Using mobilenet backbone in m2det, input should be resized to (640,640,3). Use --image-min-side 640"
 
